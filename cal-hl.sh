@@ -74,7 +74,7 @@ is_num () {
     [[ $1 == +([[:digit:]]) ]]
 }
 
-# upvar: data
+# upvar: data marks
 load_data () {
     data=()
 
@@ -131,7 +131,7 @@ parse_date () {
     result="$y$m$d"
 }
 
-# upvar: header cal
+# upvar: header cal year
 get_cal () {
     {
         read -r header
@@ -184,8 +184,7 @@ main () {
         [yellow]=$'\e[43;30m'
     )
 
-    local mode=default
-    local year=$YEAR
+    local mode=default year=$YEAR
     local data_file=~/.config/cal-hl
 
     [[ -e $data_file ]] ||
