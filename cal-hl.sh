@@ -22,7 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# Homepage: https://github.com/slowpeek/fzf-array-preview
+# Homepage: https://github.com/slowpeek/cal-hl
 
 set -eu
 
