@@ -80,7 +80,7 @@ load_data () {
 
     [[ -e $1 ]] || bye "${1@Q} doesnt exist."
     [[ -f $1 ]] || bye "${1@Q} is not a regular file."
-    [[ -r $1 ]] || bye "Cant read ${1@Q}"
+    [[ -r $1 ]] || bye "${1@Q} is not readable."
 
     local line date mark
 
@@ -324,7 +324,7 @@ main () {
     default_config
 
     if [[ -f $config_file ]]; then
-        [[ -r $config_file ]] || bye "Cant read ${config_file@Q}"
+        [[ -r $config_file ]] || bye "${config_file@Q} is not readable."
 
         # shellcheck disable=SC1090
         source "$config_file"
