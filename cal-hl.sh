@@ -209,9 +209,7 @@ resolve () {
     result=$name
 }
 
-main () {
-    local -A marks=() aliases=()
-
+default_config () {
     mark c0 $'\e[30;7m'
     mark c1 $'\e[31;7m'
     mark c2 $'\e[32;7m'
@@ -229,9 +227,23 @@ main () {
     alias magenta c5
     alias cyan c6
     alias white c7
+}
+
+main () {
+    local -A marks=() aliases=()
 
     local mode=default year=$YEAR
-    local data_file=~/.config/cal-hl
+    local data_file=~/.config/cal-hl # Default one.
+    local config_file=~/.config/cal-hl-rc
+
+    default_config
+
+    if [[ -f $config_file ]]; then
+        [[ -r $config_file ]] || bye "Cant read ${config_file@Q}"
+
+        # shellcheck disable=SC1090
+        source "$config_file"
+    fi
 
     [[ -e $data_file ]] ||
         install -D /dev/stdin "$data_file" <<< '' 2>/dev/null ||
