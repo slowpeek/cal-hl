@@ -74,11 +74,16 @@ is_num () {
     [[ $1 == +([[:digit:]]) ]]
 }
 
+# args: file required
 # upvar: data marks
 load_data () {
     data=()
 
-    [[ -e $1 ]] || bye "${1@Q} doesnt exist."
+    if [[ ! -e $1 ]]; then
+        [[ $2 == n ]] || bye "${1@Q} doesnt exist."
+        return
+    fi
+
     [[ -f $1 ]] || bye "${1@Q} is not a regular file."
     [[ -r $1 ]] || bye "${1@Q} is not readable."
 
@@ -96,7 +101,12 @@ load_data () {
 
 # upvar: data
 save_data () {
-    [[ -w $1 ]] || bye "Cant write ${1@Q}"
+    if [[ -e $1 ]]; then
+        [[ -w $1 ]] || bye "${1@Q} is not writable."
+    else
+        # Try create $1
+        : 2>/dev/null >"$1" || bye "Could not create ${1@Q}"
+    fi
 
     paste <(printf '%s\n' "${!data[@]}") <(printf '%s\n' "${data[@]}") |
         sort > "$1"
@@ -320,7 +330,7 @@ main () {
     local -A marks=() aliases=()
 
     local mode=default year=$YEAR
-    local data_file=~/.config/cal-hl # Default one.
+    local data_file_default=~/.config/cal-hl
     local config_file=~/.config/cal-hl-rc
 
     default_config
@@ -332,9 +342,7 @@ main () {
         source "$config_file"
     fi
 
-    [[ -e $data_file ]] ||
-        install -D /dev/stdin "$data_file" <<< '' 2>/dev/null ||
-        bye "Cant create default data file ${data_file@Q}"
+    local data_file=$data_file_default
 
     while getopts ':d:s:y:uhc' opt; do
         case $opt in
@@ -377,8 +385,12 @@ main () {
 
     shift $((OPTIND-1))
 
+    local required=n
+    [[ $mode == mark || $data_file == "$data_file_default" ]] ||
+        required=y
+
     local -A data
-    load_data "$data_file"
+    load_data "$data_file" "$required"
 
     case $mode in
         mark)
