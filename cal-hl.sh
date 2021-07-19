@@ -114,10 +114,11 @@ parse_date () {
         y=$YEAR
         m=${BASH_REMATCH[1]}
         d=${BASH_REMATCH[2]}
-    elif [[ $1 =~ ^(..)$ ]]; then
+    elif [[ $1 =~ ^(..?)$ ]]; then
         y=$YEAR
         m=$MONTH
         d=${BASH_REMATCH[1]}
+        [[ $d == ?? ]] || d=0$d
     else
         bye "Invalid date ${1@Q}"
     fi
@@ -265,6 +266,7 @@ formats for dates are accepted:
 
 - current month
     DD
+    D
 
 Remove marks with '-u' option.
 
