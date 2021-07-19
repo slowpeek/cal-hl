@@ -180,12 +180,12 @@ print_month () {
 
 # upvar: marks
 mark () {
-    marks[$1]=$2
+    marks[${1,,}]=$2
 }
 
 # upvar: aliases
 alias () {
-    aliases[$1]=$2
+    aliases[${1,,}]=${2,,}
 }
 
 # upvar: marks aliases result
@@ -258,7 +258,7 @@ main () {
                 mode=mark
 
                 local result
-                resolve "$OPTARG"
+                resolve "${OPTARG,,}"
                 mark=$result
                 ;;
             y)
