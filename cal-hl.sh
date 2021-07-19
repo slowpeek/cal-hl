@@ -246,19 +246,30 @@ USAGE
 
     cal-hl -h | -c
     cal-hl [-d <file>] [-y <year>]
-    cal-hl [-d <file>] [-s <mark|alias> | -u] [<date> <date> ...]
+    cal-hl [-d <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 
 Without any options, show calendar for the current year with marks
 from ~/.config/cal-hl. Use '-y' option to pick another year and '-d'
 option to specify a custom data file.
 
-There is a hardcoded set of marks and aliases. Marks are named ANSI
-sequences used to colorize output. Default marks are 'c0' to 'c7'
-corresponding to ANSI colors 0 to 7. An alias is an alternative name
-for a mark or another alias. Default aliases provide user friendly
-names for default marks e.g. 'red' resolves to 'c1', 'cyan' resolves
-to 'c6'. Even though the default aliases are self-descriptive, the
-resulting color depends on particular color scheme used in a terminal.
+cal-hl operates on marks and aliases. Marks are named ANSI sequences
+used to colorize output. Default marks are 'c0' to 'c7' corresponding
+to ANSI colors 0 to 7. An alias is an alternative name for a mark or
+another alias. Default aliases provide user friendly names for default
+marks e.g. 'red' resolves to 'c1'. Even though the default aliases are
+self-descriptive, the resulting color depends on particular color
+scheme used in a terminal.
+
+Complete list of default marks and aliases:
+
+  c0 black
+  c1 red
+  c2 green
+  c3 yellow
+  c4 blue
+  c5 magenta
+  c6 cyan
+  c7 white
 
 One can customize marks and aliases with ~/.config/cal-hl-rc. Use '-c'
 option to dump current config and see the supposed format.
@@ -278,7 +289,7 @@ formats for dates are accepted:
     DD
     D
 
-Remove marks with '-u' option.
+Remove marks from a list of dates with '-u' option.
 
 
 OPTIONS SUMMARY
@@ -294,6 +305,8 @@ OPTIONS SUMMARY
 -s <mark|alias>
     Mark a list of dates with a mark or alias.
 -u  Unmark a list of dates.
+
+In both cases above current date is assumed if the list is empty.
 
 
 FILES
