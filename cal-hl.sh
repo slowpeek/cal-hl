@@ -229,6 +229,25 @@ default_config () {
     alias white c7
 }
 
+# upvar: marks aliases
+dump_config () {
+    local k
+
+    {
+        echo '# Marks'
+        for k in "${!marks[@]}"; do
+            printf 'mark %s %q\n' "$k" "${marks[$k]}"
+        done | sort -k2,2V
+
+        echo
+
+        echo '# Aliases'
+        for k in "${!aliases[@]}"; do
+            printf 'alias %s %q\n' "$k" "${aliases[$k]}"
+        done | sort -k3,3V
+    } | sed 's/\E/\e/g'
+}
+
 main () {
     local -A marks=() aliases=()
 
@@ -249,7 +268,7 @@ main () {
         install -D /dev/stdin "$data_file" <<< '' 2>/dev/null ||
         bye "Cant create default data file ${data_file@Q}"
 
-    while getopts ':d:s:y:u' opt; do
+    while getopts ':d:s:y:uc' opt; do
         case $opt in
             d)
                 data_file=$OPTARG
@@ -270,6 +289,10 @@ main () {
                 ;;
             u)
                 mode=unmark
+                ;;
+            c)
+                dump_config
+                exit
                 ;;
             :)
                 bye "Option ${OPTARG@Q} requires value."
