@@ -392,12 +392,13 @@ main () {
     local -A data
     load_data "$data_file" "$required"
 
+    local update=n
+
     case $mode in
         mark)
             (($# > 0)) || set -- "$DAY" # By default operate on
                                         # current date.
-            local update=n date
-
+            local date
             for date; do
                 parse_date "$date"
 
@@ -406,15 +407,12 @@ main () {
                     data[$result]=$mark
                 }
             done
-
-            [[ $update == n ]] || save_data "$data_file"
             ;;
 
         unmark)
             (($# > 0)) || set -- "$DAY" # By default operate on
                                         # current date.
-            local update=n date
-
+            local date
             for date; do
                 parse_date "$date"
 
@@ -423,8 +421,6 @@ main () {
                     unset -v "data[$result]"
                 fi
             done
-
-            [[ $update == n ]] || save_data "$data_file"
             ;;
 
         default)
@@ -441,6 +437,8 @@ main () {
             } | tr _ ' '
             ;;
     esac
+
+    [[ $update == n ]] || save_data "$data_file"
 }
 
 (return 0 2>/dev/null) || main "$@"
