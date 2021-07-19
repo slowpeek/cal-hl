@@ -178,12 +178,57 @@ print_month () {
     done
 }
 
+# upvar: marks
+mark () {
+    marks[$1]=$2
+}
+
+# upvar: aliases
+alias () {
+    aliases[$1]=$2
+}
+
+# upvar: marks aliases result
+resolve () {
+    if [[ -v marks[$1] ]]; then
+        result=$1
+        return
+    fi
+
+    [[ -v aliases[$1] ]] ||
+        bye "${1@Q} is not a mark or an alias."
+
+    local name=$1
+    while [[ -v aliases[$name] ]]; do
+        name=${aliases[$name]}
+    done
+
+    [[ -v marks[$name] ]] ||
+        bye "Stuck at ${name@Q} while resolving alias ${1@Q}"
+
+    result=$name
+}
+
 main () {
-    local -A marks=(
-        [green]=$'\e[42;30m'
-        [red]=$'\e[41;30m'
-        [yellow]=$'\e[43;30m'
-    )
+    local -A marks=() aliases=()
+
+    mark c0 $'\e[30;7m'
+    mark c1 $'\e[31;7m'
+    mark c2 $'\e[32;7m'
+    mark c3 $'\e[33;7m'
+    mark c4 $'\e[34;7m'
+    mark c5 $'\e[35;7m'
+    mark c6 $'\e[36;7m'
+    mark c7 $'\e[37;7m'
+
+    alias black c0
+    alias red c1
+    alias green c2
+    alias yellow c3
+    alias blue c4
+    alias magenta c5
+    alias cyan c6
+    alias white c7
 
     local mode=default year=$YEAR
     local data_file=~/.config/cal-hl
@@ -200,8 +245,9 @@ main () {
             m)
                 mode=mark
 
-                [[ -v marks[$OPTARG] ]] || bye "Unknown mark ${OPTARG@Q}"
-                mark=$OPTARG
+                local result
+                resolve "$OPTARG"
+                mark=$result
                 ;;
             y)
                 # shellcheck disable=SC2015
