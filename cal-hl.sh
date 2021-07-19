@@ -162,8 +162,9 @@ hl_cal () {
         m=${date:4:2}
         m=${m#0}
 
-        d=${date:6}
-        d=${d/0/_}
+        d=${date:6:2}
+        d=${d#0}
+        ((d > 9)) || d=_$d
 
         cal[m-1]=${cal[m-1]/${d}_/${marks[${data[$date]}]}${d}$'\e(B\e[m'_}
     done
