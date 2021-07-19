@@ -229,6 +229,72 @@ default_config () {
     alias white c7
 }
 
+usage () {
+    cat <<'EOF'
+USAGE
+
+    cal-hl -h | -c
+    cal-hl [-d <file>] [-y <year>]
+    cal-hl [-d <file>] [-s <mark|alias> | -u] [<date> <date> ...]
+
+Without any options, show calendar for the current year with marks
+from ~/.config/cal-hl. Use '-y' option to pick another year and '-d'
+option to specify a custom data file.
+
+There is a hardcoded set of marks and aliases. Marks are named ANSI
+sequences used to colorize output. Default marks are 'c0' to 'c7'
+corresponding to ANSI colors 0 to 7. An alias is an alternative name
+for a mark or another alias. Default aliases provide user friendly
+names for default marks e.g. 'red' resolves to 'c1', 'cyan' resolves
+to 'c6'. Even though the default aliases are self-descriptive, the
+resulting color depends on particular color scheme used in a terminal.
+
+One can customize marks and aliases with ~/.config/cal-hl-rc. Use '-c'
+option to dump current config and see the supposed format.
+
+Use '-s' option with some mark or alias to mark a list of dates. Such
+formats for dates are accepted:
+
+- full
+    20YY-MM-DD
+    20YYMMDD
+
+- current year
+    MM-DD
+    MMDD
+
+- current month
+    DD
+
+Remove marks with '-u' option.
+
+
+OPTIONS SUMMARY
+
+-h  Show usage.
+-c  Dump current config.
+
+-d <file>
+    Data file. By default ~/.config/cal-hl
+-y <year>
+    Year in 20YY format. By default current year.
+
+-s <mark|alias>
+    Mark a list of dates with a mark or alias.
+-u  Unmark a list of dates.
+
+
+FILES
+
+- default data file
+    ~/.config/cal-hl
+
+- config file
+    ~/.config/cal-hl-rc
+
+EOF
+}
+
 # upvar: marks aliases
 dump_config () {
     local k
@@ -268,7 +334,7 @@ main () {
         install -D /dev/stdin "$data_file" <<< '' 2>/dev/null ||
         bye "Cant create default data file ${data_file@Q}"
 
-    while getopts ':d:s:y:uc' opt; do
+    while getopts ':d:s:y:uhc' opt; do
         case $opt in
             d)
                 data_file=$OPTARG
@@ -292,6 +358,10 @@ main () {
                 ;;
             c)
                 dump_config
+                exit
+                ;;
+            h)
+                usage
                 exit
                 ;;
             :)
