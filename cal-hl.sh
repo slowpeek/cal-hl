@@ -249,12 +249,12 @@ main () {
         install -D /dev/stdin "$data_file" <<< '' 2>/dev/null ||
         bye "Cant create default data file ${data_file@Q}"
 
-    while getopts ':d:m:y:u' opt; do
+    while getopts ':d:s:y:u' opt; do
         case $opt in
             d)
                 data_file=$OPTARG
                 ;;
-            m)
+            s)
                 mode=mark
 
                 local result
