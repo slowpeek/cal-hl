@@ -125,7 +125,7 @@ parse_date () {
     result="$y$m$d"
 }
 
-# upvar: cal year
+# upvar: cal year week_start
 get_cal () {
     _header () {
         local s=${line:$1:20}
@@ -135,6 +135,10 @@ get_cal () {
         # Underline space between month and year.
         cal[m+$2]=${s//./_}.-
     }
+
+    local opts=(-bh)
+    [[ $week_start == auto ]] || opts+=(-"$week_start")
+    opts+=("$year")
 
     {
         cal=()
@@ -157,7 +161,7 @@ get_cal () {
 
             read -r || true
         done
-    } < <(ncal -bhM "$year" | sed 1d | tr ' ' .)
+    } < <(ncal "${opts[@]}" | sed 1d | tr ' ' .)
 
     unset -f _header
 }
@@ -289,12 +293,14 @@ usage () {
 USAGE
 
     cal-hl -h | -c
-    cal-hl [-f <file>] [-y <year>]
+    cal-hl [-f <file>] [-M|-S] [-y <year>]
     cal-hl [-f <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 
 Without any options, show calendar for the current year with marks
 from ~/.config/cal-hl. Use '-y' option to pick another year and '-f'
-option to specify a custom data file.
+option to specify a custom data file. Week start by default is derived
+from the current locale. You can override that with '-M' for Monday
+and '-S' for Sunday.
 
 cal-hl operates on marks and aliases. Marks are named ANSI sequences
 used to colorize output. Default marks are 'c0' to 'c7' corresponding
@@ -315,7 +321,7 @@ Complete list of default marks and aliases:
   c6 cyan
   c7 white
 
-One can customize marks and aliases with ~/.config/cal-hl-rc. Use '-c'
+You can customize marks and aliases with ~/.config/cal-hl-rc. Use '-c'
 option to dump current config and see the supposed format.
 
 Use '-s' option with some mark or alias to mark a list of dates. Such
@@ -345,12 +351,14 @@ OPTIONS SUMMARY
     Data file. By default ~/.config/cal-hl
 -y <year>
     Year in 20YY format. By default current year.
+-M  Week start is Monday.
+-S  Week start is Sunday.
 
 -s <mark|alias>
     Mark a list of dates with a mark or alias.
 -u  Unmark a list of dates.
 
-In both cases above current date is assumed if the list is empty.
+In both cases above the current date is assumed if the list is empty.
 
 
 FILES
@@ -399,7 +407,7 @@ dump_config () {
 main () {
     local -A marks=() aliases=()
 
-    local mode=default year=$YEAR
+    local mode=default year=$YEAR week_start=auto
     local data_file_default=~/.config/cal-hl
     local config_file=~/.config/cal-hl-rc
 
@@ -417,7 +425,7 @@ main () {
 
     local data_file=$data_file_default
 
-    while getopts ':f:s:y:uhc' opt; do
+    while getopts ':f:s:y:uhcMS' opt; do
         case $opt in
             f)
                 data_file=$OPTARG
@@ -446,6 +454,9 @@ main () {
             h)
                 usage
                 exit
+                ;;
+            M|S)
+                week_start=$opt
                 ;;
             :)
                 bye "Option ${OPTARG@Q} requires value."
