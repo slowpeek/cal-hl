@@ -259,11 +259,11 @@ usage () {
 USAGE
 
     cal-hl -h | -c
-    cal-hl [-d <file>] [-y <year>]
-    cal-hl [-d <file>] <-s <mark|alias> | -u> [<date> <date> ...]
+    cal-hl [-f <file>] [-y <year>]
+    cal-hl [-f <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 
 Without any options, show calendar for the current year with marks
-from ~/.config/cal-hl. Use '-y' option to pick another year and '-d'
+from ~/.config/cal-hl. Use '-y' option to pick another year and '-f'
 option to specify a custom data file.
 
 cal-hl operates on marks and aliases. Marks are named ANSI sequences
@@ -311,7 +311,7 @@ OPTIONS SUMMARY
 -h  Show usage.
 -c  Dump current config.
 
--d <file>
+-f <file>
     Data file. By default ~/.config/cal-hl
 -y <year>
     Year in 20YY format. By default current year.
