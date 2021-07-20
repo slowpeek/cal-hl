@@ -374,9 +374,9 @@ main () {
 
     local data_file=$data_file_default
 
-    while getopts ':d:s:y:uhc' opt; do
+    while getopts ':f:s:y:uhc' opt; do
         case $opt in
-            d)
+            f)
                 data_file=$OPTARG
                 ;;
             s)
