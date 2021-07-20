@@ -6,6 +6,8 @@
   cal-hl [-f <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 #+end_example
 
+[[./demo.png]]
+
 Without any options, show calendar for the current year with marks
 from =~/.config/cal-hl=. Use =-y= option to pick another year and =-f=
 option to specify a custom data file. Week start by default is derived
@@ -34,7 +36,8 @@ Complete list of default marks and aliases:
 
 You can customize marks and aliases with =~/.config/cal-hl-rc=. Use
 =-c= option to dump current config and see the supposed format. Here
-is the output for the default config:
+is the default config rendered in =konsole= with the =breeze= color
+theme:
 
 [[./default_config.png]]
 
