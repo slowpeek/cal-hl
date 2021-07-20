@@ -189,14 +189,52 @@ print_month () {
     done
 }
 
+# args: name ansiseq
 # upvar: marks
 mark () {
+    (($# > 1)) || bye "'mark' command requires two args."
+    [[ -n $1 ]] || bye 'Empty mark name.'
+
     marks[${1,,}]=$2
 }
 
+# args: src dst
 # upvar: aliases
 alias () {
-    aliases[${1,,}]=${2,,}
+    (($# > 1)) || bye "'alias' command requires two args."
+    local src=${1,,} dst=${2,,}
+
+    [[ -n $src ]] || bye 'Empty alias name.'
+    [[ -n $dst ]] || bye "Empty target name for alias ${src@Q}"
+
+    [[ ! -v marks[$src] ]] ||
+        bye "Alias ${src@Q} has the same name as a mark."
+
+    [[ ! $src == "$dst" ]] || bye "Alias ${src@Q} points to itself."
+
+    if [[ -v marks[$dst] ]]; then
+        aliases[$src]=$dst
+        return
+    fi
+
+    [[ -v aliases[$dst] ]] ||
+        bye "Alias ${src@Q} points to an unknown name ${dst@Q}"
+
+    local -A seen=([$src]=t [$dst]=t)
+    local el=${aliases[$dst]}
+
+    while true; do
+        if [[ -v marks[$el] ]]; then
+            aliases[$src]=$dst
+            return
+        fi
+
+        [[ ! -v seen[$el] ]] ||
+            bye "Alias ${src@Q} -> ${dst@Q} results in a cycle."
+
+        seen[$el]=t
+        el=${aliases[$el]}
+    done
 }
 
 # upvar: marks aliases result
@@ -213,9 +251,6 @@ resolve () {
     while [[ -v aliases[$name] ]]; do
         name=${aliases[$name]}
     done
-
-    [[ -v marks[$name] ]] ||
-        bye "Stuck at ${name@Q} while resolving alias ${1@Q}"
 
     result=$name
 }
@@ -346,6 +381,7 @@ main () {
     local data_file_default=~/.config/cal-hl
     local config_file=~/.config/cal-hl-rc
 
+    BYE_PREFIX='config'
     default_config
 
     if [[ -f $config_file ]]; then
@@ -354,6 +390,8 @@ main () {
         # shellcheck disable=SC1090
         source "$config_file"
     fi
+
+    BYE_PREFIX=
 
     local data_file=$data_file_default
 
