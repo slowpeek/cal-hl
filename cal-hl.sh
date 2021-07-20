@@ -336,20 +336,33 @@ EOF
 
 # upvar: marks aliases
 dump_config () {
-    local k
+    local k filter=cat
+
+    # Only show the first 3 cols if not on terminal.
+    [[ $(readlink /proc/$$/fd/1) == /dev/@(tty|pts)* ]] || filter='cut -f1-3'
 
     {
         echo '# Marks'
         for k in "${!marks[@]}"; do
-            printf 'mark %s %q\n' "$k" "${marks[$k]}"
-        done | sort -k2,2V
+            printf 'mark\t%s\t%q\t# %s%s\e(B\e[m\n' \
+                   "$k" \
+                   "${marks[$k]}" \
+                   "${marks[$k]}" \
+                   "$k"
+        done | $filter | sort -k2,2V | column -t -s$'\t'
 
         echo
 
         echo '# Aliases'
+        local result
         for k in "${!aliases[@]}"; do
-            printf 'alias %s %q\n' "$k" "${aliases[$k]}"
-        done | sort -k3,3V
+            resolve "${aliases[$k]}"
+            printf 'alias\t%s\t%s\t# %s%s\e(B\e[m\n' \
+                   "$k" \
+                   "${aliases[$k]}" \
+                   "${marks[$result]}" \
+                   "$k"
+        done | $filter | sort -k3,3V | column -t -s$'\t'
     } | sed 's/\E/\e/g'
 }
 
