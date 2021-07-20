@@ -6,7 +6,9 @@
   cal-hl [-f <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 #+end_example
 
+#+html: <details><summary>demo</summary>
 [[./demo.png]]
+#+html: </details>
 
 Without any options, show calendar for the current year with marks
 from =~/.config/cal-hl=. Use =-y= option to pick another year and =-f=
@@ -39,7 +41,9 @@ You can customize marks and aliases with =~/.config/cal-hl-rc=. Use
 is the default config rendered in =konsole= with the =breeze= color
 theme:
 
+#+html: <details><summary>default config</summary>
 [[./default_config.png]]
+#+html: </details>
 
 Use =-s= option with some mark or alias to mark a list of dates. Such
 formats for dates are accepted:
