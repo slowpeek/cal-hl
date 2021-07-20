@@ -256,14 +256,14 @@ resolve () {
 }
 
 default_config () {
-    mark c0 $'\e[30;7m'
-    mark c1 $'\e[31;7m'
-    mark c2 $'\e[32;7m'
-    mark c3 $'\e[33;7m'
-    mark c4 $'\e[34;7m'
-    mark c5 $'\e[35;7m'
-    mark c6 $'\e[36;7m'
-    mark c7 $'\e[37;7m'
+    mark c0 $'\e[30m'
+    mark c1 $'\e[31m'
+    mark c2 $'\e[32m'
+    mark c3 $'\e[33m'
+    mark c4 $'\e[34m'
+    mark c5 $'\e[35m'
+    mark c6 $'\e[36m'
+    mark c7 $'\e[37m'
 
     alias black c0
     alias red c1
