@@ -82,6 +82,7 @@ load_data () {
     done < "$1"
 }
 
+# args: file
 # upvar: data
 save_data () {
     if [[ -e $1 ]]; then
@@ -95,6 +96,7 @@ save_data () {
         sort > "$1"
 }
 
+# args: raw_date
 # upvar: result
 parse_date () {
     local y m d
@@ -183,6 +185,7 @@ hl_cal () {
     done
 }
 
+# args: list of {0..11}
 # upvar: cal
 print_month () {
     local m
@@ -250,6 +253,7 @@ alias () {
     done
 }
 
+# args: raw_name
 # upvar: marks aliases result
 resolve () {
     if [[ -v marks[$1] ]]; then
