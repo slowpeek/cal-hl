@@ -53,6 +53,10 @@ is_num () {
     [[ $1 == +([[:digit:]]) ]]
 }
 
+is_name () {
+    [[ $1 == +([a-z0-9_]) ]]
+}
+
 # args: file required
 # upvar: data marks
 load_data () {
@@ -174,7 +178,13 @@ mark () {
     (($# > 1)) || bye "'mark' command requires two args."
     [[ -n $1 ]] || bye 'Empty mark name.'
 
-    marks[${1,,}]=$2
+    local name=${1,,}
+
+    is_name "$name" ||
+        bye "Invalid mark name ${name@Q}. Only latin letters, numbers" \
+            "and underscore are allowed."
+
+    marks[$name]=$2
 }
 
 # args: src dst
@@ -185,6 +195,11 @@ alias () {
 
     [[ -n $src ]] || bye 'Empty alias name.'
     [[ -n $dst ]] || bye "Empty target name for alias ${src@Q}"
+
+    # shellcheck disable=SC2015
+    is_name "$src" && is_name "$dst" ||
+            bye "Invalid name in alias ${src@Q} -> ${dst@Q}. Only latin" \
+                "letters, numbers and underscore are allowed."
 
     [[ ! -v marks[$src] ]] ||
         bye "Alias ${src@Q} has the same name as a mark."
