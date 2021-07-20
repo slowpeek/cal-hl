@@ -125,16 +125,29 @@ parse_date () {
     result="$y$m$d"
 }
 
-# upvar: header cal year
+# upvar: cal year
 get_cal () {
-    {
-        read -r header
+    _header () {
+        local s=${line:$1:20}
+        local pad=${s%%[^.]*}
+        # Month to the left, YYYY to the right.
+        s=${s#$pad}${pad:4}YYYY
+        # Underline space between month and year.
+        cal[m+$2]=${s//./_}.-
+    }
 
+    {
         cal=()
         local m i line
 
         for ((m=0; m<12; m+=3)); do
-            for ((i=0; i<8; i++)); do
+            read -r line
+
+            _header 0 0
+            _header 22 1
+            _header 44 2
+
+            for ((i=0; i<7; i++)); do
                 read -r line
 
                 cal[m]+=${line::21}-
@@ -144,7 +157,9 @@ get_cal () {
 
             read -r || true
         done
-    } < <(ncal -bhM "$year" | tr ' ' _)
+    } < <(ncal -bhM "$year" | sed 1d | tr ' ' .)
+
+    unset -f _header
 }
 
 # upvar: data year cal marks
@@ -158,9 +173,9 @@ hl_cal () {
 
         d=${date:6:2}
         d=${d#0}
-        ((d > 9)) || d=_$d
+        ((d > 9)) || d=.$d
 
-        cal[m-1]=${cal[m-1]/${d}_/${marks[${data[$date]}]}${d}$'\e(B\e[m'_}
+        cal[m-1]=${cal[m-1]/${d}./${marks[${data[$date]}]}${d}$'\e(B\e[m'.}
     done
 }
 
@@ -168,7 +183,7 @@ hl_cal () {
 print_month () {
     local m
     for m; do
-        echo "${cal[$m]//-/$'_\n'}"
+        echo "${cal[$m]//-/$'.\n'}"
     done
 }
 
@@ -482,17 +497,17 @@ main () {
             ;;
 
         default)
-            local header cal
+            local cal
             get_cal
             hl_cal
 
+            echo
             {
-                echo "$header"
                 paste -d '' \
                       <(print_month 0 3 6 9) \
                       <(print_month 1 4 7 10) \
                       <(print_month 2 5 8 11)
-            } | tr _ ' '
+            } | tr . ' ' | sed "s/YYYY/$year/g"
             ;;
     esac
 
