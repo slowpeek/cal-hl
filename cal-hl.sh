@@ -303,7 +303,7 @@ formats for dates are accepted:
     DD
     D
 
-Remove marks from a list of dates with '-u' option.
+Remove marks for a list of dates with '-u' option.
 
 
 OPTIONS SUMMARY
