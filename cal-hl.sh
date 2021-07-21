@@ -124,7 +124,7 @@ parse_date () {
 
     date -d "$y-$m-$d" &>/dev/null || bye "Invalid date ${1@Q}"
 
-    result="$y$m$d"
+    result=$y$m$d
 }
 
 # upvar: cal year week_start
