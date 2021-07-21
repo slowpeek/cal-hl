@@ -49,6 +49,24 @@ bye () {
     exit "${BYE_EXIT:-1}"
 }
 
+# args: var ?val
+temp () {
+    [[ $1 == var ]] || local -n var=$1
+    local -n old=QLD_$1
+
+    if (($# > 1)); then
+        [[ ! -v var ]] || old=$var
+        var=$2
+    else
+        if [[ -v old ]]; then
+            var=$old
+            unset -v old
+        else
+            unset -v var
+        fi
+    fi
+}
+
 is_num () {
     [[ $1 == +([[:digit:]]) ]]
 }
@@ -415,7 +433,7 @@ main () {
     local data_file_default=~/.config/cal-hl
     local config_file=~/.config/cal-hl-rc
 
-    BYE_PREFIX='config'
+    temp BYE_PREFIX config
     default_config
 
     if [[ -f $config_file ]]; then
@@ -425,7 +443,7 @@ main () {
         source "$config_file"
     fi
 
-    BYE_PREFIX=
+    temp BYE_PREFIX
 
     local data_file=$data_file_default
 
