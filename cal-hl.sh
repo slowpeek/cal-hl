@@ -445,7 +445,7 @@ main () {
 
     temp BYE_PREFIX
 
-    local data_file=$data_file_default
+    local data_file=$data_file_default opt mark
 
     while getopts ':f:s:y:uhcMS' opt; do
         case $opt in
@@ -518,7 +518,7 @@ main () {
         unmark)
             (($# > 0)) || set -- "$DAY" # By default operate on
                                         # current date.
-            local date
+            local date result
             for date; do
                 parse_date "$date"
 
