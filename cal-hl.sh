@@ -76,7 +76,7 @@ is_name () {
 }
 
 # args: file required
-# upvar: data marks
+# upvar: data marks token
 load_data () {
     data=()
 
@@ -90,18 +90,23 @@ load_data () {
 
     local line date mark
 
-    while read -r line; do
-        [[ -n $line ]] || continue # Skip empty lines.
+    {
+        read -r line || return 0 # Empty file.
 
-        read -r date mark <<< "$line"
+        [[ $line == "$token" ]] ||
+            bye "${1@Q} doesnt look like a cal-hl data file."
 
-        [[ -v marks[$mark] ]] || bye "Unknown mark ${mark@Q} in ${1@Q}"
-        data[$date]=$mark
-    done < "$1"
+        while read -r line; do
+            read -r date mark <<< "$line"
+
+            [[ -v marks[$mark] ]] || bye "Unknown mark ${mark@Q} in ${1@Q}"
+            data[$date]=$mark
+        done
+    } < "$1"
 }
 
 # args: file
-# upvar: data
+# upvar: data token
 save_data () {
     if [[ -e $1 ]]; then
         [[ -w $1 ]] || bye "${1@Q} is not writable."
@@ -110,8 +115,11 @@ save_data () {
         : 2>/dev/null >"$1" || bye "Could not create ${1@Q}"
     fi
 
-    paste <(printf '%s\n' "${!data[@]}") <(printf '%s\n' "${data[@]}") |
-        sort > "$1"
+    {
+        echo "$token"
+        paste <(printf '%s\n' "${!data[@]}") <(printf '%s\n' "${data[@]}") |
+            sort
+    } >"$1"
 }
 
 # args: raw_date
@@ -432,6 +440,7 @@ main () {
     local mode=default year=$YEAR week_start=auto
     local data_file_default=~/.config/cal-hl
     local config_file=~/.config/cal-hl-rc
+    local token='# cal-hl'      # Data file format marker.
 
     temp BYE_PREFIX config
     default_config
