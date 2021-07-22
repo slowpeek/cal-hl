@@ -18,7 +18,7 @@ bye () {
 
         # Only print not empty messages.
         if (($# > 0)); then
-            local prefix=${BYE_PREFIX:-}
+            local prefix=${BYE_PREFIX-}
 
             if [[ $prefix == auto ]]; then
                 read -r lineno func file < <(caller 0)
@@ -31,7 +31,7 @@ bye () {
             printf "%s%s\n" "$prefix" "$*"
         fi
 
-        if [[ ${BYE_VERBOSE:-} == y ]] && ((lvl > 2)); then
+        if [[ ${BYE_VERBOSE-} == y ]] && ((lvl > 2)); then
             local s n=0 stack=()
             while s=$(caller "$n"); do
                 read -r lineno func file <<< "$s"
