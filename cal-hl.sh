@@ -49,13 +49,16 @@ bye () {
     exit "${BYE_EXIT:-1}"
 }
 
-# args: var ?val
 temp () {
+    # Flaw: it is not correct in case of declared but not set vars
+    # like 'declare x'. On restore such var would become set with an
+    # empty value.
+
     [[ $1 == var ]] || local -n var=$1
-    local -n old=QLD_$1
+    local -n old=TE__$1
 
     if (($# > 1)); then
-        [[ ! -v var ]] || old=$var
+        ! declare -p var &>/dev/null || old=${var-}
         var=$2
     else
         if [[ -v old ]]; then
