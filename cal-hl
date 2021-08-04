@@ -130,7 +130,13 @@ save_data () {
 parse_date () {
     local y m d
 
-    if [[ $1 =~ ^(20..)-?(..)-?(..)$ ]]; then
+    if [[ $1 == ~* ]]; then
+        [[ $1 == ~[12] ]] ||
+            bye "${1@Q} is not supported." \
+                'Only ~1 (yesterday) and ~2 (the day before) are.'
+
+        IFS=- read -r y m d < <(date -d "-${1:1} day" +%F)
+    elif [[ $1 =~ ^(20..)-?(..)-?(..)$ ]]; then
         y=${BASH_REMATCH[1]}
         m=${BASH_REMATCH[2]}
         d=${BASH_REMATCH[3]}
@@ -371,6 +377,12 @@ formats for dates are accepted:
 - current month
     DD
     D
+
+- yesterday
+    ~1
+
+- the day before yesterday
+    ~2
 
 Remove marks for a list of dates with '-u' option.
 

@@ -58,6 +58,12 @@ formats for dates are accepted:
   - DD
   - D
 
+- yesterday
+  - =~1=
+
+- the day before yesterday
+  - =~2=
+
 Remove marks for a list of dates with =-u= option.
 
 
