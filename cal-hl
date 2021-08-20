@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC2218
 
 # MIT license (c) 2021 https://github.com/slowpeek
 # Homepage: https://github.com/slowpeek/cal-hl
@@ -19,9 +19,23 @@ _ () {
 # MIT license (c) 2021 https://github.com/slowpeek
 # Homepage: https://github.com/slowpeek/here-bye
 
+_ () {
+    unset -f _
+
+    IFS=, read -r -a HERE_PREFIX <<< "${HERE_PREFIX-}"
+    IFS=, read -r -a BYE_PREFIX <<< "${BYE_PREFIX-}"
+}; _
+
 here () {
-    local IFS=' '
-    printf '%s\n' "$*"
+    if (($# > 0)); then
+        if [[ -v HERE_PREFIX ]]; then
+            printf '[%s]' "${HERE_PREFIX[@]}"
+            echo -n ' '
+        fi
+
+        local IFS=' '
+        printf '%s\n' "$*"
+    fi
 }
 
 here2 () {
@@ -29,31 +43,17 @@ here2 () {
 }
 
 bye () {
+    if [[ -v BYE_PREFIX ]]; then
+        HERE_PREFIX=(
+            "${BYE_PREFIX[@]}"
+            ${HERE_PREFIX[@]+"${HERE_PREFIX[@]}"}
+        )
+    fi
+
     here "$@" >&2
     exit "${BYE_EXIT:-1}"
 }
 # --------------------------------------------------------------
-
-temp () {
-    # Flaw: it is not correct in case of declared but not set vars
-    # like 'declare x'. On restore such var would become set with an
-    # empty value.
-
-    [[ $1 == var ]] || local -n var=$1
-    local -n old=TE__$1
-
-    if (($# > 1)); then
-        ! declare -p var &>/dev/null || old=${var-}
-        var=$2
-    else
-        if [[ -v old ]]; then
-            var=$old
-            unset -v old
-        else
-            unset -v var
-        fi
-    fi
-}
 
 is_num () {
     [[ $1 == +([[:digit:]]) ]]
@@ -442,7 +442,7 @@ main () {
     local config_file=~/.config/cal-hl-rc
     local token='# cal-hl'      # Data file format marker.
 
-    temp BYE_PREFIX config
+    BYE_PREFIX+=(config)
     default_config
 
     if [[ -f $config_file ]]; then
@@ -452,7 +452,7 @@ main () {
         source "$config_file"
     fi
 
-    temp BYE_PREFIX
+    unset -v 'BYE_PREFIX[-1]'
 
     local data_file=$data_file_default opt mark
 
