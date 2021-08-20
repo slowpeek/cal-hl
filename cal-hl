@@ -6,9 +6,11 @@
 set -eu
 
 _ () {
+    unset -f _
+
     printf -v DATE '%(%Y-%m-%d)T'
     IFS=- read -r YEAR MONTH DAY <<< "$DATE"
-}; _; unset -f _
+}; _
 
 bye () {
     IFS=' '
