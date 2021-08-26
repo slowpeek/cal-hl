@@ -15,10 +15,7 @@ _ () {
     IFS=- read -r YEAR MONTH DAY <<< "$DATE"
 }; _
 
-# --------------------------------------------------------------
-# MIT license (c) 2021 https://github.com/slowpeek
-# Homepage: https://github.com/slowpeek/here-bye
-
+# https://github.com/slowpeek/here-bye -------------------------
 _ () {
     unset -f _
 
