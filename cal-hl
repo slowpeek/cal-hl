@@ -456,42 +456,31 @@ main () {
     while getopts ':f:s:y:uhcMS' opt; do
         case $opt in
             f)
-                data_file=$OPTARG
-                ;;
+                data_file=$OPTARG ;;
             s)
                 mode=mark
 
                 local result
                 resolve "${OPTARG,,}"
-                mark=$result
-                ;;
+                mark=$result ;;
             y)
                 # shellcheck disable=SC2015
                 is_num "$OPTARG" && [[ $OPTARG == 20?? ]] ||
                     bye "Invalid -y value."
 
-                year=$OPTARG
-                ;;
+                year=$OPTARG ;;
             u)
-                mode=unmark
-                ;;
+                mode=unmark ;;
             c)
-                dump_config
-                exit
-                ;;
+                dump_config; exit ;;
             h)
-                usage
-                exit
-                ;;
+                usage; exit ;;
             M|S)
-                week_start=$opt
-                ;;
+                week_start=$opt ;;
             :)
-                bye "Option ${OPTARG@Q} requires value."
-                ;;
+                bye "Option ${OPTARG@Q} requires value." ;;
             \?)
-                bye "Unknown option ${OPTARG@Q}"
-                ;;
+                bye "Unknown option ${OPTARG@Q}" ;;
         esac
     done
 
