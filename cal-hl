@@ -470,4 +470,4 @@ main () {
     [[ $update == n ]] || save_data "$data_file"
 }
 
-(return 0 2>/dev/null) || main "$@"
+[[ ! ${BASH_SOURCE[0]} == "$0" ]] || main "$@"
