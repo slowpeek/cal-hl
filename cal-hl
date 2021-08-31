@@ -317,84 +317,12 @@ USAGE
     cal-hl [-f <file>] [-M|-S] [-y <year>]
     cal-hl [-f <file>] <-s <mark|alias> | -u> [<date> <date> ...]
 
-Without any options, show calendar for the current year with marks
-from ~/.config/cal-hl. Use '-y' option to pick another year and '-f'
-option to specify a custom data file. Week start by default is derived
-from the current locale. You can override that with '-M' for Monday
-and '-S' for Sunday.
-
-cal-hl operates on marks and aliases. Marks are named ANSI sequences
-used to colorize output. Default marks are 'c0' to 'c7' corresponding
-to ANSI colors 0 to 7. An alias is an alternative name for a mark or
-another alias. Default aliases provide user friendly names for default
-marks e.g. 'red' resolves to 'c1'. Even though the default aliases are
-self-descriptive, the resulting color depends on particular color
-scheme used in a terminal.
-
-Complete list of default marks and aliases:
-
-  c0 black
-  c1 red
-  c2 green
-  c3 yellow
-  c4 blue
-  c5 magenta
-  c6 cyan
-  c7 white
-
-You can customize marks and aliases with ~/.config/cal-hl-rc. Use '-c'
-option to dump current config and see the supposed format.
-
-Use '-s' option with some mark or alias to mark a list of dates. Such
-formats for dates are accepted:
-
-- full
-    20YY-MM-DD
-    20YYMMDD
-
-- current year
-    MM-DD
-    MMDD
-
-- current month
-    DD
-    D
-
-- yesterday
-    ~1
-
-- the day before yesterday
-    ~2
-
-Remove marks for a list of dates with '-u' option.
-
-
-OPTIONS SUMMARY
-
--h  Show usage.
--c  Dump current config.
-
--f <file>
-    Data file. By default ~/.config/cal-hl
--y <year>
-    Year in 20YY format. By default current year.
--M  Week start is Monday.
--S  Week start is Sunday.
-
--s <mark|alias>
-    Mark a list of dates with a mark or alias.
--u  Unmark a list of dates.
-
-In both cases above the current date is assumed if the list is empty.
-
-
 FILES
 
-- default data file
-    ~/.config/cal-hl
+    ~/.config/cal-hl-rc    config file
+    ~/.config/cal-hl       default data file
 
-- config file
-    ~/.config/cal-hl-rc
+More details at https://github.com/slowpeek/cal-hl
 
 EOF
 }
