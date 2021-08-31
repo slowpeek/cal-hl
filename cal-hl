@@ -6,7 +6,7 @@
 
 set -eu
 
-! test -f "${BASH_SOURCE[0]%/*}"/locate-exit.sh || source "$_"
+! test -f "${BASH_SOURCE[0]%/*}"/dev/main.sh || source "$_"
 
 _ () {
     unset -f _
