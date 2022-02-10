@@ -102,8 +102,11 @@ save_data () {
 
     {
         echo "$token"
-        paste <(printf '%s\n' "${!data[@]}") <(printf '%s\n' "${data[@]}") |
-            sort
+
+        if (( ${#data[@]} > 0 )); then
+            paste <(printf '%s\n' "${!data[@]}") <(printf '%s\n' "${data[@]}") |
+                sort
+        fi
     } >"$1"
 }
 
