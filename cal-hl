@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1090,SC2218
 
-# MIT license (c) 2021 https://github.com/slowpeek
+# MIT license (c) 2021-2022 https://github.com/slowpeek
 # Homepage: https://github.com/slowpeek/cal-hl
 
 set -eu
